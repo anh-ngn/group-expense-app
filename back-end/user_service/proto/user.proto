@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "user_service/api/user";
+
+service UserService {
+    rpc RegisterWithEmail (RegisterWithEmailRequest) returns (RegisterResponse);
+    rpc LoginWithEmail (LoginWithEmailRequest) returns (LoginResponse);
+    rpc LoginWithGoogle (LoginWithGoogleRequest) returns (LoginResponse);
+}
+
+message RegisterWithEmailRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message RegisterResponse {
+    string message = 1;
+}
+
+message LoginWithEmailRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message LoginWithGoogleRequest {
+    string googleToken = 1;
+}
+
+message LoginResponse {
+    string token = 1;
+    string message = 2;
+}

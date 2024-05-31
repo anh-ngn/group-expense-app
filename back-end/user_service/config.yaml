@@ -1,0 +1,8 @@
+DBHost: "localhost"
+DBPort: "5432"
+DBUser: "your_db_user"
+DBPassword: "your_db_password"
+DBName: "your_db_name"
+JWTSecret: "your_jwt_secret"
+GoogleClientID: "your_google_client_id"
+GoogleClientSecret: "your_google_client_secret"
