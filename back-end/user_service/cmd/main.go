@@ -5,7 +5,6 @@ import (
 	"net"
 
 	"github.com/anh-ngn/group-expense-app/user_service/api/user"
-	"github.com/anh-ngn/group-expense-app/user_service/internal/user"
 
 	"google.golang.org/grpc"
 )
