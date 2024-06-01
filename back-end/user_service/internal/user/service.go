@@ -1,4 +1,3 @@
-// internal/user/service.go
 package user
 
 import (
@@ -6,9 +5,9 @@ import (
 	"crypto/sha256"
 	"database/sql"
 	"fmt"
-	"path/to/internal/user/repository"
 
 	pb "github.com/anh-ngn/group-expense-app/user_service/api/user"
+	"github.com/anh-ngn/group-expense-app/user_service/internal/user/repository"
 )
 
 type UserService struct {
@@ -40,15 +39,16 @@ func (s *UserService) LoginWithEmail(ctx context.Context, req *pb.LoginWithEmail
 	if user.PasswordHash.String != passwordHash {
 		return nil, fmt.Errorf("invalid credentials")
 	}
-	return &pb.LoginWithEmailResponse{UserId: fmt.Sprintf("%d", user.ID), Email: user.Email}, nil
+	return &pb.LoginWithEmailResponse{UserId: fmt.Sprintf("%d", user.ID), Email: user.Email, AvatarUrl: user.AvatarUrl}, nil
 }
 
 func (s *UserService) LoginWithGoogle(ctx context.Context, req *pb.LoginWithGoogleRequest) (*pb.LoginWithGoogleResponse, error) {
 	user, err := s.repo.GetUserByGoogleID(ctx, req.GoogleId)
 	if err == sql.ErrNoRows {
 		user, err = s.repo.CreateUserWithGoogle(ctx, repository.CreateUserWithGoogleParams{
-			Email:    req.Email,
-			GoogleID: sql.NullString{String: req.GoogleId, Valid: true},
+			Email:     req.Email,
+			GoogleID:  sql.NullString{String: req.GoogleId, Valid: true},
+			AvatarUrl: req.AvatarUrl,
 		})
 		if err != nil {
 			return nil, err
@@ -56,5 +56,39 @@ func (s *UserService) LoginWithGoogle(ctx context.Context, req *pb.LoginWithGoog
 	} else if err != nil {
 		return nil, err
 	}
-	return &pb.LoginWithGoogleResponse{UserId: fmt.Sprintf("%d", user.ID), Email: user.Email}, nil
+	return &pb.LoginWithGoogleResponse{UserId: fmt.Sprintf("%d", user.ID), Email: user.Email, AvatarUrl: user.AvatarUrl}, nil
+}
+
+func (s *UserService) LoginWithApple(ctx context.Context, req *pb.LoginWithAppleRequest) (*pb.LoginWithAppleResponse, error) {
+	user, err := s.repo.GetUserByAppleID(ctx, req.AppleId)
+	if err == sql.ErrNoRows {
+		user, err = s.repo.CreateUserWithApple(ctx, repository.CreateUserWithAppleParams{
+			Email:     req.Email,
+			AppleID:   sql.NullString{String: req.AppleId, Valid: true},
+			AvatarUrl: req.AvatarUrl,
+		})
+		if err != nil {
+			return nil, err
+		}
+	} else if err != nil {
+		return nil, err
+	}
+	return &pb.LoginWithAppleResponse{UserId: fmt.Sprintf("%d", user.ID), Email: user.Email, AvatarUrl: user.AvatarUrl}, nil
+}
+
+func (s *UserService) LoginWithMicrosoft(ctx context.Context, req *pb.LoginWithMicrosoftRequest) (*pb.LoginWithMicrosoftResponse, error) {
+	user, err := s.repo.GetUserByMicrosoftID(ctx, req.MicrosoftId)
+	if err == sql.ErrNoRows {
+		user, err = s.repo.CreateUserWithMicrosoft(ctx, repository.CreateUserWithMicrosoftParams{
+			Email:       req.Email,
+			MicrosoftID: sql.NullString{String: req.MicrosoftId, Valid: true},
+			AvatarUrl:   req.AvatarUrl,
+		})
+		if err != nil {
+			return nil, err
+		}
+	} else if err != nil {
+		return nil, err
+	}
+	return &pb.LoginWithMicrosoftResponse{UserId: fmt.Sprintf("%d", user.ID), Email: user.Email, AvatarUrl: user.AvatarUrl}, nil
 }

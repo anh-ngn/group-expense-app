@@ -31,7 +31,7 @@ migrate-status: ## Show migration status
 	@$(MIGRATE_CMD) version
 
 run: ## Run the server
-	@go run main.go
+	@go run cmd/*.go
 
 # generate go code from proto files
 gen-proto:
